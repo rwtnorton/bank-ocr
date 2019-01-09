@@ -1,7 +1,11 @@
 (ns bank-ocr.scanner
-  (:require [clojure.java.io :as io]
-            [clojure.set :as set])
+  (:require [clojure.string :as str])
   (:import [java.io StringReader BufferedReader]))
+
+(defn normalize-chars
+  [s]
+  (when-not (nil? s)
+    (str/replace s #"(?ms)[^_\s|]" "?")))
 
 (defn string->rdr
   [s]
@@ -23,12 +27,12 @@
 
 (defn string->line-groups
   [s]
-  (if (seq s)
+  (if (nil? s)
+    []
     (->> s
          string->rdr
          rdr->lines
-         lines->line-groups)
-    []))
+         lines->line-groups)))
 
 
 
