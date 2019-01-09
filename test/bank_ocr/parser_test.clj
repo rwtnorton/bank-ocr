@@ -5,10 +5,10 @@
 
 (deftest parse-ocr-digit
   (are [v expected] (= (parser/parse-ocr-digit v) expected)
-    nil :dunno
-    [] :dunno
-    42 :dunno
-    "one" :dunno
+    nil ::parser/???
+    [] ::parser/???
+    42 ::parser/???
+    "one" ::parser/???
     ocr-digit/zero 0
     ocr-digit/one 1
     ocr-digit/two 2
