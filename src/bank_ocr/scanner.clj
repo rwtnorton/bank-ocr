@@ -34,9 +34,23 @@
          rdr->lines
          lines->line-groups)))
 
+;; A "line-group" is a seq of {\space underbar vbar} strings,
+;; one per line.
+(defn line-group->ocr-digits
+  [line-group]
+  (let [tokens (->> line-group
+                    (map (fn [line]
+                           (->> line
+                                (partition 3)
+                                (map (partial apply str))))))]
+    (if-not (seq tokens)
+      []
+      (->> tokens
+           (apply map vector)
+           (map #(str/join \newline %))))))
 
 
-(def digits
+(def ocr-digits
 
   "
     _  _     _  _  _  _  _ 
@@ -48,4 +62,11 @@
   | _||_||_||_|  |  |  | _|
 
 "
+  )
+
+
+(comment
+
+  (string->line-groups ocr-digits)
+
   )

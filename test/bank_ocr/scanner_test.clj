@@ -3,6 +3,10 @@
             [bank-ocr.scanner :as scanner]
             [clojure.string :as str]))
 
+(declare ocr-digit-for)
+
+(defn- jn [vs] (str/join \newline vs))
+
 (deftest normalize-chars
   (are [samesies] (= (scanner/normalize-chars samesies) samesies)
     nil
@@ -12,7 +16,7 @@
     (str/join ["    _  _     _  _  _  _  _ "
                "  | _| _||_||_ |_   ||_||_|"
                "  ||_  _|  | _||_|  ||_| _|"])
-    (str/join \newline
+    (jn
               ["    _  _     _  _  _  _  _ "
                "  | _| _||_||_ |_   ||_||_|"
                "  ||_  _|  | _||_|  ||_| _|"
@@ -27,11 +31,11 @@
                "  | _| _||_||_ |_   ||?||?|"
                "  ||_  _|  | _||_?  ||_| _|"])
 
-    (str/join \newline
+    (jn
               [" /  _  _     _  _  _  _  _ "
                "  | _| _||_||_ |_   ||-||-|"
                "  ||_  _|  | _||_6  ||_| _|"])
-    (str/join \newline
+    (jn
               [" ?  _  _     _  _  _  _  _ "
                "  | _| _||_||_ |_   ||?||?|"
                "  ||_  _|  | _||_?  ||_| _|"])))
@@ -44,3 +48,56 @@
     "foo\nbar\n\nbaz\nquux\n    \nhmm" [["foo" "bar"]
                                         ["baz" "quux"]
                                         ["hmm"]]))
+
+
+(deftest line-group->ocr-digits
+  (are [lg expected] (= (scanner/line-group->ocr-digits lg) expected)
+    [] []
+    ;; Each digit string must be three chars wide.
+    ["|" "|" "|"] []
+    ["  |"
+     "  |"
+     "  |"] [(jn ["  |" "  |" "  |"])]
+    [" _ "
+     "| |"
+     "|_|"] [(ocr-digit-for 0)]
+
+    [" _    " "| |  |" "|_|  |"]
+    [(ocr-digit-for 0) (ocr-digit-for 1)]
+
+    ["    _  _     _  _  _  _  _ "
+     "  | _| _||_||_ |_   ||_||_|"
+     "  ||_  _|  | _||_|  ||_| _|"]
+    (mapv ocr-digit-for (range 1 10))))
+
+
+(def ocr-digit-for [(jn [" _ "
+                         "| |"
+                         "|_|"])
+                    (jn ["   "
+                         "  |"
+                         "  |"])
+                    (jn [" _ "
+                         " _|"
+                         "|_ "])
+                    (jn [" _ "
+                         " _|"
+                         " _|"])
+                    (jn ["   "
+                         "|_|"
+                         "  |"])
+                    (jn [" _ "
+                         "|_ "
+                         " _|"])
+                    (jn [" _ "
+                         "|_ "
+                         "|_|"])
+                    (jn [" _ "
+                         "  |"
+                         "  |"])
+                    (jn [" _ "
+                         "|_|"
+                         "|_|"])
+                    (jn [" _ "
+                         "|_|"
+                         " _|"])])
