@@ -33,6 +33,7 @@
   (if (nil? rdr)
     []
     (->> rdr
+         (BufferedReader.)
          rdr->lines
          lines->line-groups)))
 
