@@ -50,9 +50,9 @@
            (map #(str/join \newline %))))))
 
 
-(def ocr-digits
+(comment
 
-  "
+  (def ocr-digits "
     _  _     _  _  _  _  _ 
   | _| _||_||_ |_   ||_||_|
   ||_  _|  | _||_|  ||_| _|
@@ -61,12 +61,7 @@
 |_||_|| || ||_   |  |  ||_ 
   | _||_||_||_|  |  |  | _|
 
-"
-  )
-
-
-(comment
-
+")
   (string->line-groups ocr-digits)
 
-  )
+)
