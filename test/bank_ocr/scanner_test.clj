@@ -4,6 +4,7 @@
 
 (deftest string->line-groups
   (are [s expected] (= (scanner/string->line-groups s) expected)
+    nil []
     "" []
     "foo" [["foo"]]
     "foo\nbar\n\nbaz\nquux\n    \nhmm" [["foo" "bar"]

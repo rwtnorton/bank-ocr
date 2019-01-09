@@ -21,9 +21,14 @@
        ffirst
        (remove empty?)))
 
-(def string->line-groups (comp lines->line-groups
-                               rdr->lines
-                               string->rdr))
+(defn string->line-groups
+  [s]
+  (if (seq s)
+    (->> s
+         string->rdr
+         rdr->lines
+         lines->line-groups)
+    []))
 
 
 
