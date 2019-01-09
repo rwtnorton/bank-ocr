@@ -1,4 +1,5 @@
 (ns bank-ocr.main
+  (:gen-class)
   (:require [bank-ocr.scanner :as scanner]
             [bank-ocr.analyzer :as analyzer]
             [bank-ocr.formatter :as formatter]))
