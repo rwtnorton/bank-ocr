@@ -1,11 +1,8 @@
 (ns bank-ocr.scanner-test
   (:require [clojure.test :refer :all]
             [bank-ocr.scanner :as scanner]
+            [bank-ocr.ocr-digit :as ocr-digit :refer [ocr-digit-for]]
             [clojure.string :as str]))
-
-(declare ocr-digit-for)
-
-(defn- jn [vs] (str/join \newline vs))
 
 (deftest normalize-chars
   (are [samesies] (= (scanner/normalize-chars samesies) samesies)
@@ -16,7 +13,7 @@
     (str/join ["    _  _     _  _  _  _  _ "
                "  | _| _||_||_ |_   ||_||_|"
                "  ||_  _|  | _||_|  ||_| _|"])
-    (jn
+    (str/join \newline
               ["    _  _     _  _  _  _  _ "
                "  | _| _||_||_ |_   ||_||_|"
                "  ||_  _|  | _||_|  ||_| _|"
@@ -31,11 +28,11 @@
                "  | _| _||_||_ |_   ||?||?|"
                "  ||_  _|  | _||_?  ||_| _|"])
 
-    (jn
+    (str/join \newline
               [" /  _  _     _  _  _  _  _ "
                "  | _| _||_||_ |_   ||-||-|"
                "  ||_  _|  | _||_6  ||_| _|"])
-    (jn
+    (str/join \newline
               [" ?  _  _     _  _  _  _  _ "
                "  | _| _||_||_ |_   ||?||?|"
                "  ||_  _|  | _||_?  ||_| _|"])))
@@ -54,50 +51,21 @@
   (are [lg expected] (= (scanner/line-group->ocr-digits lg) expected)
     [] []
     ;; Each digit string must be three chars wide.
-    ["|" "|" "|"] []
+    ["|"
+     "|"
+     "|"] []
     ["  |"
      "  |"
-     "  |"] [(jn ["  |" "  |" "  |"])]
+     "  |"] [(str/join \newline ["  |" "  |" "  |"])]
     [" _ "
      "| |"
-     "|_|"] [(ocr-digit-for 0)]
+     "|_|"] [ocr-digit/zero]
 
-    [" _    " "| |  |" "|_|  |"]
-    [(ocr-digit-for 0) (ocr-digit-for 1)]
+    [" _    "
+     "| |  |"
+     "|_|  |"] [ocr-digit/zero ocr-digit/one]
 
     ["    _  _     _  _  _  _  _ "
      "  | _| _||_||_ |_   ||_||_|"
      "  ||_  _|  | _||_|  ||_| _|"]
     (mapv ocr-digit-for (range 1 10))))
-
-
-(def ocr-digit-for [(jn [" _ "
-                         "| |"
-                         "|_|"])
-                    (jn ["   "
-                         "  |"
-                         "  |"])
-                    (jn [" _ "
-                         " _|"
-                         "|_ "])
-                    (jn [" _ "
-                         " _|"
-                         " _|"])
-                    (jn ["   "
-                         "|_|"
-                         "  |"])
-                    (jn [" _ "
-                         "|_ "
-                         " _|"])
-                    (jn [" _ "
-                         "|_ "
-                         "|_|"])
-                    (jn [" _ "
-                         "  |"
-                         "  |"])
-                    (jn [" _ "
-                         "|_|"
-                         "|_|"])
-                    (jn [" _ "
-                         "|_|"
-                         " _|"])])
