@@ -34,6 +34,14 @@
          rdr->lines
          lines->line-groups)))
 
+(defn rdr->line-groups
+  [rdr]
+  (if (nil? rdr)
+    []
+    (->> rdr
+         rdr->lines
+         lines->line-groups)))
+
 ;; A "line-group" is a seq of {\space underbar vbar} strings,
 ;; one per line.
 (defn line-group->ocr-digits
