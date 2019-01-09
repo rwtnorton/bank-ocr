@@ -3,6 +3,8 @@
 
 (defn parse-ocr-digit
   [ocr-digit]
+  ;; Note:  Need to use `condp` instead of `case` because ocr-digits
+  ;;        are not compile-time constants.
   (condp = ocr-digit
     ocr-digit/zero 0
     ocr-digit/one 1
@@ -16,5 +18,4 @@
     ocr-digit/nine 9
     ;; else
     :dunno))
-
 
