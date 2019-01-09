@@ -1,7 +1,8 @@
 (defproject bank-ocr "0.1.0-SNAPSHOT"
-  :description "scans seven-segment display numbers and converts into their arabic numeral counterparts"
+  :description "Scans seven-segment display numbers and converts into their arabic numeral counterparts"
   :url ""
-  :license {:name "EPL-2.0 OR GPL-2.0-or-later WITH Classpath-exception-2.0"
-            :url "https://www.eclipse.org/legal/epl-2.0/"}
+  :license {:name "Apache License, version 2.0"
+            :url "https://www.apache.org/licenses/LICENSE-2.0"}
   :dependencies [[org.clojure/clojure "1.9.0"]]
-  :repl-options {:init-ns bank-ocr.core})
+  :repl-options {:init-ns bank-ocr.main}
+  :main bank-ocr.main)
