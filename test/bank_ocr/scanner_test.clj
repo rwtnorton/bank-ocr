@@ -38,32 +38,29 @@
                "  ||_  _|  | _||_?  ||_| _|"])))
 
 (deftest string->line-groups
-  (are [s expected] (= (scanner/string->line-groups s) expected)
+  (are [s expected] (= expected (scanner/string->line-groups s))
     nil []
     "" []
-    "foo" [["foo"]]
-    "foo\nbar\n\nbaz\nquux\n    \nhmm" [["foo" "bar"]
-                                        ["baz" "quux"]
-                                        ["hmm"]]))
 
+    "foo\nbar\nbaz\n\nbaz\nquux\nxyzzy\n\n"
+    [["foo" "bar" "baz"]
+     ["baz" "quux" "xyzzy"]]))
 
 (deftest line-group->ocr-digits
-  (are [lg expected] (= (scanner/line-group->ocr-digits lg) expected)
+  (are [lg expected] (= expected (scanner/line-group->ocr-digits lg))
     [] []
-    ;; Each digit string must be three chars wide.
-    ["|"
-     "|"
-     "|"] []
-    ["  |"
-     "  |"
-     "  |"] [(str/join \newline ["  |" "  |" "  |"])]
+
     [" _ "
      "| |"
-     "|_|"] [ocr-digit/zero]
+     "|_|"] [ocr-digit/zero ocr-digit/blank ocr-digit/blank
+             ocr-digit/blank ocr-digit/blank ocr-digit/blank
+             ocr-digit/blank ocr-digit/blank ocr-digit/blank]
 
     [" _    "
      "| |  |"
-     "|_|  |"] [ocr-digit/zero ocr-digit/one]
+     "|_|  |"] [ocr-digit/zero ocr-digit/one ocr-digit/blank
+                ocr-digit/blank ocr-digit/blank ocr-digit/blank
+                ocr-digit/blank ocr-digit/blank ocr-digit/blank]
 
     ["    _  _     _  _  _  _  _ "
      "  | _| _||_||_ |_   ||_||_|"

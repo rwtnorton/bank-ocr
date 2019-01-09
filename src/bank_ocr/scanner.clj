@@ -15,15 +15,9 @@
 
 (defn lines->line-groups
   [lines]
-  (->> (iterate (fn [[group vs :as args]]
-                  (if (seq vs)
-                    (let [[t d] (split-with #(not (re-seq #"^\s*$" %)) vs)]
-                      [(conj group t) (rest d)])
-                    args))
-                [[] lines])
-       (drop-while (comp seq second))
-       ffirst
-       (remove empty?)))
+  (->> lines
+       (partition-all 4)
+       (map butlast)))
 
 (defn string->line-groups
   [s]
@@ -49,6 +43,7 @@
   (let [tokens (->> line-group
                     (map (fn [line]
                            (->> line
+                                (format "%-27s")
                                 (partition 3)
                                 (map (partial apply str))))))]
     (if-not (seq tokens)

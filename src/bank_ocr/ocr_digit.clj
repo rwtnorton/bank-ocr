@@ -43,3 +43,8 @@
                       " _|"]))
 
 (def ocr-digit-for [zero one two three four five six seven eight nine])
+
+(def ^:constant blank
+  (str/join \newline ["   "
+                      "   "
+                      "   "]))
